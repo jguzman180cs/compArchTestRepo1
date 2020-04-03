@@ -6,4 +6,8 @@ public class MathHelper {
         }
         return ((num & num-1)==0);
     }
+
+    public static double log2(int num){
+        return Math.log(num)/Math.log(2);
+    }
 }
