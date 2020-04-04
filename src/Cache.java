@@ -62,4 +62,82 @@ public class Cache{
         }
     }
 
+
+    /**
+     * Use the toString() method on the return type to get the string representation
+     * @return enum representation of replacement policy (call toString() to get string representation)
+     * @throws RuntimeException errors when cache isn't initialized
+     */
+    public static ReplacementPolicy getReplacementPolicy(){
+        if(replacementPolicy==null || cache == null){
+            throw new RuntimeException("Cache not yet initialized");
+        }
+        return replacementPolicy;
+    }
+
+    /**
+     *
+     * @return cache size in KB
+     * @throws RuntimeException errors when cache isn't initialized
+     */
+    public static int getCacheSizeKB(){
+        if(cacheSizeBytes==0 || cache == null){
+            throw new RuntimeException("Cache not yet initialized");
+        }
+        return cacheSizeBytes/1024;
+    }
+
+    /**
+     *
+     * @return associativity of cache
+     * @throws RuntimeException errors when cache isn't initialized
+     */
+    public static int getAssociativity(){
+        if(cache==null || associativity == 0){
+            throw new RuntimeException("Cache not yet initialized");
+        }
+        return associativity;
+    }
+
+    /**
+     * In bytes
+     * @return block size in bytes
+     * @throws RuntimeException errors when cache isn't initialized
+     */
+    public static int getBlockSize(){
+        if(cache == null || blockSize == 0){
+            throw new RuntimeException("Cache not yet initialized");
+        }
+        return blockSize;
+    }
+
+    public static int getIndexBitSize(){
+        if(cache == null || indexBits == 0){
+            throw new RuntimeException("Cache not yet initialized");
+        }
+        return indexBits;
+    }
+
+    public static int getOffsetBitSize() {
+        if(cache == null || offsetBitCount == 0){
+            throw new RuntimeException("Cache not yet initialized");
+        }
+        return offsetBitCount;
+    }
+
+    public static int getTagBitSize(){
+        return 32 - getIndexBitSize() - getOffsetBitSize();
+    }
+
+    public static int getOverheadMemorySizeBytes(){
+        if(cache == null || cacheSizeBytes == 0){
+            throw new RuntimeException("Cache not yet initialized");
+        }
+        int numOfTagBits = getTagBitSize();
+        return (int) Math.ceil(((numOfTagBits+1)*cache.length*getAssociativity())/8f);
+    }
+
+    public static int getImplementationMemorySizeBytes(){
+        return getCacheSizeKB()*1024 + getOverheadMemorySizeBytes();
+    }
 }
