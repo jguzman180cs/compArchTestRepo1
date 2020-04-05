@@ -125,6 +125,13 @@ public class Cache{
         return offsetBitCount;
     }
 
+    public static int getNumOfBlocks(){
+        if(cache == null || offsetBitCount == 0){
+            throw new RuntimeException("Cache not yet initialized");
+        }
+        return getAssociativity() * getNumOfRows();
+    }
+
     public static int getTagBitSize(){
         return 32 - getIndexBitSize() - getOffsetBitSize();
     }
