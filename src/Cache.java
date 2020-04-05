@@ -157,4 +157,8 @@ public class Cache{
         return cache.length;
     }
 
+    public static int getTotalBlocks(){
+        return getAssociativity() * getNumOfRows();
+    }
+
 }
