@@ -25,7 +25,7 @@ public class MainClass {
             }
         }
 
-        Cache.initializeCache(cacheSizeInKB, blockSize, associativity, ReplacementPolicy.valueOf(replacementPolicy.toUpperCase()));
+        Cache.initializeCache(cacheSizeInKB, blockSize, associativity, ReplacementPolicy.valueOf(replacementPolicy));
 
         try{
             File inputFile = new File(traceFileName);
