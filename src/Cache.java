@@ -33,7 +33,7 @@ public class Cache{
         if(!(associativity>=1 && associativity<=16)){
             throw new IllegalArgumentException("Associativity not between 1 and 16");
         }
-        if(cacheSizeKB<1 || cacheSizeKB>8*1014){
+        if(cacheSizeKB<1 || cacheSizeKB>8*1024){
             throw new IllegalArgumentException("Cache size not within range of 1 KB to 8 MB");
         }
         if(RP==null){
