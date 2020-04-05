@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class MainClass {
     private static String traceFileName;
     private static int cacheSizeInKB;
@@ -20,6 +25,23 @@ public class MainClass {
             }
         }
 
-        System.out.println("hello wrold");
+        Cache.initializeCache(cacheSizeInKB, blockSize, associativity, ReplacementPolicy.valueOf(replacementPolicy));
+
+        try{
+            File inputFile = new File(traceFileName);
+            String line1, line2, line3;
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            //Read three lines at a time, "EIP...", "dstM..." and a new line
+            while((line1 = reader.readLine()) != null &&
+                    (line2 = reader.readLine()) != null &&
+                    (line3 = reader.readLine()) != null){
+                System.out.println(line1);
+                System.out.println(line2);
+                System.out.println(line3);
+                System.out.println("END OF LINE 1, 2, 3");
+            }
+        } catch (IOException e){
+            System.out.printf("%nSomething unexpected happened when reading the trace file. Try again.%n");
+        }
     }
 }

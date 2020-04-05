@@ -160,5 +160,4 @@ public class Cache{
     public static int getTotalBlocks(){
         return getAssociativity() * getNumOfRows();
     }
-
 }
