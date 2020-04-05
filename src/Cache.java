@@ -137,7 +137,24 @@ public class Cache{
         return (int) Math.ceil(((numOfTagBits+1)*cache.length*getAssociativity())/8f);
     }
 
+    /**
+     * To get KB, just divide by 1024.
+     * @return implementation size in bytes
+     */
     public static int getImplementationMemorySizeBytes(){
         return getCacheSizeKB()*1024 + getOverheadMemorySizeBytes();
     }
+
+    public static double getCost(){
+        return getCacheSizeKB() * 0.05;
+    }
+
+    public static int numOfRows(){
+        if(cache == null || cacheSizeBytes == 0){
+            throw new RuntimeException("Cache not yet initialized");
+        }
+
+        return cache.length;
+    }
+
 }
