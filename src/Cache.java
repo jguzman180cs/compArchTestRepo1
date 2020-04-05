@@ -149,7 +149,7 @@ public class Cache{
         return getCacheSizeKB() * 0.05;
     }
 
-    public static int numOfRows(){
+    public static int getNumOfRows(){
         if(cache == null || cacheSizeBytes == 0){
             throw new RuntimeException("Cache not yet initialized");
         }
