@@ -150,7 +150,7 @@ public class Cache{
     }
 
     public static double getCost(){
-        return (getImplementationMemorySizeBytes() / 1024) * 0.05;
+        return (float) (getImplementationMemorySizeBytes() / 1024) * 0.05;
     }
 
     public static int getNumOfRows(){
