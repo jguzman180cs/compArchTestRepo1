@@ -5,7 +5,9 @@ public class Cache{
      */
     public static CacheEntry[][] cache;
     private static int hits = 0;
-    private static int misses = 0;
+    private static int compulsoryMisses = 0;
+    private static int conflictMisses = 0;
+    private static int totalAccess = 0;
 
     private static int cacheSizeBytes;
     private static int blockSize;
@@ -43,6 +45,10 @@ public class Cache{
         if(blockSize<4 || blockSize > 64){
             throw new IllegalArgumentException("Block size not between 4 to 64 bytes");
         }
+        hits = 0;
+        compulsoryMisses = 0;
+        conflictMisses = 0;
+        totalAccess = 0;
         cacheSizeBytes = cacheSizeKB*1024;
         Cache.blockSize = blockSize;
         Cache.associativity = associativity;
@@ -144,7 +150,7 @@ public class Cache{
     }
 
     public static double getCost(){
-        return getCacheSizeKB() * 0.05;
+        return (getImplementationMemorySizeBytes() / 1024) * 0.05;
     }
 
     public static int getNumOfRows(){
