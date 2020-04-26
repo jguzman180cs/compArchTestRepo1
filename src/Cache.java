@@ -182,6 +182,7 @@ public class Cache{
         if(index >= cache.length){
             throw new IndexOutOfBoundsException("Cache index out of bounds");
         }
+        totalAccess++;
 
         CacheEntry[] cacheRow = cache[index];
         boolean invalidFound = false;
