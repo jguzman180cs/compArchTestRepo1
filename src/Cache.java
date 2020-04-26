@@ -164,4 +164,70 @@ public class Cache{
     public static int getTotalBlocks(){
         return getAssociativity() * getNumOfRows();
     }
+
+    public static void accessAddress(int address, int length){
+        int startBlockOffset = address << 32-getOffsetBitSize();
+        startBlockOffset = startBlockOffset >> 32-getOffsetBitSize();
+
+        int startTag = address >> getOffsetBitSize() + getOffsetBitSize();
+        int startIndex = address << getTagBitSize() >> getTagBitSize();
+        startIndex = startIndex >> getOffsetBitSize();
+
+        //TODO: get other block accesses if necessary
+
+        accessBlock(startIndex,startTag);
+    }
+
+    private static void accessBlock(int index, int tag){
+        if(index >= cache.length){
+            throw new IndexOutOfBoundsException("Cache index out of bounds");
+        }
+
+        CacheEntry[] cacheRow = cache[index];
+        boolean invalidFound = false;
+        boolean hasHit = false;
+        for (CacheEntry cacheEntry : cacheRow) {
+            if (!cacheEntry.valid) { //empty block found
+                invalidFound = true;
+                cacheEntry.valid = true;
+                cacheEntry.tag=tag;
+                break;
+            } else if (cacheEntry.tag == tag) { //has hit correct tag
+                hasHit = true;
+                break;
+            }
+        }
+        if(hasHit)
+            hits++;
+        else if(invalidFound)
+            compulsoryMisses++;
+        else {
+            conflictMisses++;
+            replaceBlock(index, tag);
+        }
+    }
+
+    private static void replaceBlock(int index, int tag){
+        if(getAssociativity()==1){
+            cache[index][0].tag=tag;
+            cache[index][0].valid=true;
+            return;
+        }
+
+        switch (getReplacementPolicy()){
+            case RR:
+                //todo: implement RR
+                return;
+            case LRU:
+                //todo: implement LRU
+                return;
+            case RND:
+                int associativeToReplace = (int)(Math.random()*getAssociativity());
+                cache[index][associativeToReplace].tag = tag;
+                cache[index][associativeToReplace].valid = true;
+                return;
+            default:
+                throw new RuntimeException("Unknown Replacement Policy: " + getReplacementPolicy()==null ? "null" : getReplacementPolicy().getStringName());
+        }
+    }
 }
