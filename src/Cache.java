@@ -223,9 +223,10 @@ public class Cache{
             case RR:
                 cache[index][rrTracker[index]].tag = tag;
                 cache[index][rrTracker[index]].valid = true;
+                rrTracker[index] += 1;
                 if(rrTracker[index] == getAssociativity())
                     rrTracker[index] = 0;
-                else rrTracker[index] += 1;
+
 
                 return;
             case LRU:
