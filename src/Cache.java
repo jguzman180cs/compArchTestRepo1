@@ -4,6 +4,7 @@ public class Cache{
      * First index is cache index, 2nd index is associativity.
      */
     public static CacheEntry[][] cache;
+    public static int[] rrTracker;
     private static int hits = 0;
     private static int compulsoryMisses = 0;
     private static int conflictMisses = 0;
@@ -16,6 +17,7 @@ public class Cache{
 
     private static int offsetBitCount;
     private static int indexBits;
+
 
     /**
      * Always call this before initially starting cache simulator.
@@ -59,7 +61,9 @@ public class Cache{
         indexBits = (int) Math.ceil(MathHelper.log2(numOfIndexes));
 
         cache = new CacheEntry[numOfIndexes][associativity];
+        rrTracker = new int[numOfIndexes];
         for(int y = 0; y < cache.length; y++){
+            rrTracker[y] = 0;
             for(int x = 0; x < cache[y].length; x++){
                 cache[y][x] = new CacheEntry(0,false);
             }
@@ -217,7 +221,12 @@ public class Cache{
 
         switch (getReplacementPolicy()){
             case RR:
-                //todo: implement RR
+                cache[index][rrTracker[index]].tag = tag;
+                cache[index][rrTracker[index]].valid = true;
+                if(rrTracker[index] == getAssociativity())
+                    rrTracker[index] = 0;
+                else rrTracker[index] += 1;
+
                 return;
             case LRU:
                 //todo: implement LRU
