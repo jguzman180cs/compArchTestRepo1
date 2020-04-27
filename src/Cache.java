@@ -172,8 +172,8 @@ public class Cache{
         int startTag = address >>> getOffsetBitSize() + getOffsetBitSize();
         int startIndex = address << getTagBitSize() >>> getTagBitSize();
         startIndex = startIndex >>> getOffsetBitSize();
-        if(startBlockOffset > 64){
-            totalAccess++;
+        if(startBlockOffset+length > Math.pow(2,getOffsetBitSize())-1){ //true if overflow
+            accessBlock(startIndex+1,startTag);
         }
 
         accessBlock(startIndex,startTag);
