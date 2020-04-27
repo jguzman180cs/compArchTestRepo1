@@ -1,4 +1,5 @@
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,13 +42,14 @@ public class MainClass {
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
 
             //Read three lines at a time, "EIP...", "dstM..." and a new line
-            while((line1 = reader.readLine()) != null && (line2 = reader.readLine()) != null && (line3 = reader.readLine()) != null && count < 20){
+            while((line1 = reader.readLine()) != null && (line2 = reader.readLine()) != null && (line3 = reader.readLine()) != null){// && count < 20){
                 patternMatcher = regexPattern.matcher(line1);
                 patternMatcher.find();
                 String instructionLength = patternMatcher.group(1);
                 String instructionAddress = patternMatcher.group(2);
                 Cache.accessAddress(Integer.parseInt(instructionAddress, 16), Integer.parseInt(instructionLength));
-                System.out.printf("count = %s, address = 0x%s%n", patternMatcher.group(1), patternMatcher.group(2).toUpperCase());
+//                System.out.printf("count = %s, address = 0x%s%n", patternMatcher.group(1), patternMatcher.group(2).toUpperCase());
+                //use the print statement above for debugging
                 count++;
             }
         } catch (IOException e){
@@ -81,6 +83,7 @@ public class MainClass {
     }
 
     public static void outputCacheSimulatorNumbers(){
+        DecimalFormat format = new DecimalFormat("#.##%");
         System.out.println("***** Cache Simulation Results *****");
         System.out.println();
         System.out.printf("Total Cache Accesses: \t%s%n", Cache.getTotalAccess());
