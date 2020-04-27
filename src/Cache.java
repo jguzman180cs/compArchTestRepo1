@@ -8,6 +8,7 @@ public class Cache{
     private static int hits = 0;
     private static int compulsoryMisses = 0;
     private static int conflictMisses = 0;
+
     private static int totalAccess = 0;
 
     private static int cacheSizeBytes;
@@ -169,15 +170,32 @@ public class Cache{
         return getAssociativity() * getNumOfRows();
     }
 
+    public static int getHits() {
+        return hits;
+    }
+
+    public static int getCompulsoryMisses() {
+        return compulsoryMisses;
+    }
+
+    public static int getConflictMisses() {
+        return conflictMisses;
+    }
+
+    public static int getTotalAccess() {
+        return totalAccess;
+    }
+
     public static void accessAddress(int address, int length){
         int startBlockOffset = address << 32-getOffsetBitSize();
-        startBlockOffset = startBlockOffset >> 32-getOffsetBitSize();
+        startBlockOffset = startBlockOffset >>> 32-getOffsetBitSize();
 
-        int startTag = address >> getOffsetBitSize() + getOffsetBitSize();
-        int startIndex = address << getTagBitSize() >> getTagBitSize();
-        startIndex = startIndex >> getOffsetBitSize();
-
-        //TODO: get other block accesses if necessary
+        int startTag = address >>> getOffsetBitSize() + getOffsetBitSize();
+        int startIndex = address << getTagBitSize() >>> getTagBitSize();
+        startIndex = startIndex >>> getOffsetBitSize();
+        if(startBlockOffset+length > Math.pow(2,getOffsetBitSize())-1){ //true if overflow
+            accessBlock(startIndex+1,startTag);
+        }
 
         accessBlock(startIndex,startTag);
     }
