@@ -186,6 +186,20 @@ public class Cache{
         return totalAccess;
     }
 
+    public static double getHitRate(){
+        return (hits * 100 / totalAccess);
+    }
+
+    public static double getMissRate(){
+        return (1 - getHitRate());
+    }
+
+    public static double getCPI(){
+        int cycles = 3 * (compulsoryMisses + conflictMisses) + hits;
+
+        return cycles / totalAccess;
+    }
+
     public static void accessAddress(int address, int length){
         int startBlockOffset = address << 32-getOffsetBitSize();
         startBlockOffset = startBlockOffset >>> 32-getOffsetBitSize();
