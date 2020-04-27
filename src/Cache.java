@@ -167,13 +167,14 @@ public class Cache{
 
     public static void accessAddress(int address, int length){
         int startBlockOffset = address << 32-getOffsetBitSize();
-        startBlockOffset = startBlockOffset >> 32-getOffsetBitSize();
+        startBlockOffset = startBlockOffset >>> 32-getOffsetBitSize();
 
-        int startTag = address >> getOffsetBitSize() + getOffsetBitSize();
-        int startIndex = address << getTagBitSize() >> getTagBitSize();
-        startIndex = startIndex >> getOffsetBitSize();
-
-        //TODO: get other block accesses if necessary
+        int startTag = address >>> getOffsetBitSize() + getOffsetBitSize();
+        int startIndex = address << getTagBitSize() >>> getTagBitSize();
+        startIndex = startIndex >>> getOffsetBitSize();
+        if(startBlockOffset > 64){
+            totalAccess++;
+        }
 
         accessBlock(startIndex,startTag);
     }
