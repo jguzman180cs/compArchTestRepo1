@@ -7,6 +7,7 @@ public class Cache{
     private static int hits = 0;
     private static int compulsoryMisses = 0;
     private static int conflictMisses = 0;
+
     private static int totalAccess = 0;
 
     private static int cacheSizeBytes;
@@ -163,6 +164,22 @@ public class Cache{
 
     public static int getTotalBlocks(){
         return getAssociativity() * getNumOfRows();
+    }
+
+    public static int getHits() {
+        return hits;
+    }
+
+    public static int getCompulsoryMisses() {
+        return compulsoryMisses;
+    }
+
+    public static int getConflictMisses() {
+        return conflictMisses;
+    }
+
+    public static int getTotalAccess() {
+        return totalAccess;
     }
 
     public static void accessAddress(int address, int length){

@@ -25,7 +25,7 @@ public class MainClass {
         }
 
         Cache.initializeCache(cacheSizeInKB, blockSize, associativity, ReplacementPolicy.valueOf(replacementPolicy.toUpperCase()));
-        outputCacheNumbers();
+//        outputCacheNumbers();
         //when creating our output files we use the print method below
         // otherwise we use outputCacheNumbers() when executing a jar or just running the project in IntelliJ
 //        printCacheOutputNumbersToFile();
@@ -53,6 +53,7 @@ public class MainClass {
         } catch (IOException e){
             System.out.printf("%nSomething unexpected happened when reading the trace file. Try again.%n");
         }
+        outputCacheSimulatorNumbers();
     }
 
     public static void outputCacheNumbers(){
@@ -77,6 +78,24 @@ public class MainClass {
         System.out.printf("OverheadSize:  \t\t\t\t\t%s bytes%n", Cache.getOverheadMemorySizeBytes());
         System.out.printf("Implementation Memory Size: \t%s KB (%s bytes)%n", Cache.getImplementationMemorySizeBytes() / 1024, Cache.getImplementationMemorySizeBytes());
         System.out.printf("Cost: \t\t\t\t\t\t\t$%s%n", Cache.getCost());
+    }
+
+    public static void outputCacheSimulatorNumbers(){
+        System.out.println("***** Cache Simulation Results *****");
+        System.out.println();
+        System.out.printf("Total Cache Accesses: \t%s%n", Cache.getTotalAccess());
+        System.out.printf("Cache Hits: \t\t\t%s %n", Cache.getHits());
+        System.out.printf("Cache Misses: \t\t\t%s%n", Cache.getCompulsoryMisses()+Cache.getConflictMisses());
+        System.out.printf("--- Compulsory Misses: \t\t%s%n", Cache.getCompulsoryMisses());
+        System.out.printf("--- Conflict Misses: \t\t%s%n", Cache.getConflictMisses());
+        System.out.println();
+
+        System.out.println("***** ***** CACHE MISS RATE: ***** *****");
+        System.out.println();
+        System.out.printf("Hit Rate: \t\t\t\t\t%s%%%n", Cache.getHits()); //temporary until hit rate method is created
+        System.out.printf("CPI: \t\t\t\t\t\t%s Cycles/Instruction%n", Cache.getHits()); //temporary until CPI method is created
+        System.out.printf("Unused Cache Space: \t\t%s KB / %s KB = %.2f %% Waste: $%.2f %n", Cache.getCacheSizeKB(), Cache.getCacheSizeKB(), 30.0, 50.0);
+        System.out.printf("Unused Cache Blocks: \t\t%s%n", 50);
     }
 
     public static void printCacheOutputNumbersToFile() {
