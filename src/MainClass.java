@@ -9,6 +9,7 @@ public class MainClass {
     private static int blockSize;
     private static int associativity;
     private static String replacementPolicy;
+    public static int count;
 
     public static void main(String[] args){
         for(int i = 0;i < args.length; i++){
@@ -36,7 +37,7 @@ public class MainClass {
         Matcher patternMatcher;
 
         try{
-            int count = 0;
+            count = 0;
             File inputFile = new File(traceFileName);
             String line1, line2, line3;
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));

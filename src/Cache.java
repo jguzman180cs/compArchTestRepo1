@@ -194,8 +194,8 @@ public class Cache{
         return (1 - getHitRate());
     }
 
-    public static double getCPI(){
-        int cycles = 3 * (compulsoryMisses + conflictMisses) + hits;
+    public static double getCPI(int count){
+        int cycles = 3 * (compulsoryMisses + conflictMisses) + hits + (count * 2);
 
         return cycles / totalAccess;
     }
