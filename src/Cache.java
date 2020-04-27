@@ -212,6 +212,8 @@ public class Cache{
         }
     }
 
+    
+
     private static void replaceBlock(int index, int tag){
         if(getAssociativity()==1){
             cache[index][0].tag=tag;
