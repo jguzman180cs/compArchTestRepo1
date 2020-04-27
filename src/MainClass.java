@@ -44,6 +44,9 @@ public class MainClass {
             while((line1 = reader.readLine()) != null && (line2 = reader.readLine()) != null && (line3 = reader.readLine()) != null && count < 20){
                 patternMatcher = regexPattern.matcher(line1);
                 patternMatcher.find();
+                String instructionLength = patternMatcher.group(1);
+                String instructionAddress = patternMatcher.group(2);
+                Cache.accessAddress(Integer.parseInt(instructionAddress, 16), Integer.parseInt(instructionLength));
                 System.out.printf("count = %s, address = 0x%s%n", patternMatcher.group(1), patternMatcher.group(2).toUpperCase());
                 count++;
             }
