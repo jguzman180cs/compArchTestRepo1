@@ -4,16 +4,22 @@ public class Cache{
      * First index is cache index, 2nd index is associativity.
      */
     public static CacheEntry[][] cache;
+    public static int[] rrTracker;
     private static int hits = 0;
-    private static int misses = 0;
+    private static int compulsoryMisses = 0;
+    private static int conflictMisses = 0;
+
+    private static int totalAccess = 0;
 
     private static int cacheSizeBytes;
     private static int blockSize;
     private static int associativity;
     private static ReplacementPolicy replacementPolicy;
+    private static int unusedBlocks = 0;
 
     private static int offsetBitCount;
     private static int indexBits;
+
 
     /**
      * Always call this before initially starting cache simulator.
@@ -43,6 +49,10 @@ public class Cache{
         if(blockSize<4 || blockSize > 64){
             throw new IllegalArgumentException("Block size not between 4 to 64 bytes");
         }
+        hits = 0;
+        compulsoryMisses = 0;
+        conflictMisses = 0;
+        totalAccess = 0;
         cacheSizeBytes = cacheSizeKB*1024;
         Cache.blockSize = blockSize;
         Cache.associativity = associativity;
@@ -53,7 +63,9 @@ public class Cache{
         indexBits = (int) Math.ceil(MathHelper.log2(numOfIndexes));
 
         cache = new CacheEntry[numOfIndexes][associativity];
+        rrTracker = new int[numOfIndexes];
         for(int y = 0; y < cache.length; y++){
+            rrTracker[y] = 0;
             for(int x = 0; x < cache[y].length; x++){
                 cache[y][x] = new CacheEntry(0,false);
             }
@@ -144,7 +156,7 @@ public class Cache{
     }
 
     public static double getCost(){
-        return getCacheSizeKB() * 0.05;
+        return (float) (getImplementationMemorySizeBytes() / 1024) * 0.05;
     }
 
     public static int getNumOfRows(){
@@ -157,5 +169,135 @@ public class Cache{
 
     public static int getTotalBlocks(){
         return getAssociativity() * getNumOfRows();
+    }
+
+    public static int getHits() {
+        return hits;
+    }
+
+    public static int getCompulsoryMisses() {
+        return compulsoryMisses;
+    }
+
+    public static int getConflictMisses() {
+        return conflictMisses;
+    }
+
+    public static int getTotalAccess() {
+        return totalAccess;
+    }
+
+    public static double getHitRate(){
+        return ((double) hits * 100 / totalAccess);
+    }
+
+    public static double getMissRate(){
+        return (1 - getHitRate());
+    }
+
+    public static double getCPI(int count){
+        int cycles = 3 * (compulsoryMisses + conflictMisses) + hits + (count * 2);
+
+        return cycles / totalAccess;
+    }
+
+    public static int getUnusedBlocks(){
+        return unusedBlocks;
+    }
+
+    public static double getUnusedCacheInKB(){
+        return ((double) Cache.getUnusedBlocks() * Cache.getBlockSize()) / 1024;
+    }
+
+    public static double getCachePercentageNotUsed(){
+        return (Cache.getUnusedCacheInKB() / Cache.getCacheSizeKB()) * 100;
+    }
+
+    public static double getWaste(){
+        return getUnusedCacheInKB() * 0.05;
+    }
+
+    public static void accessAddress(int address, int length){
+        int startBlockOffset = address << 32-getOffsetBitSize();
+        startBlockOffset = startBlockOffset >>> 32-getOffsetBitSize();
+
+        int startTag = address >>> getOffsetBitSize() + getOffsetBitSize();
+        int startIndex = address << getTagBitSize() >>> getTagBitSize();
+        startIndex = startIndex >>> getOffsetBitSize();
+        if(startBlockOffset+length > Math.pow(2,getOffsetBitSize())-1){ //true if overflow
+            accessBlock(startIndex+1,startTag);
+        }
+
+        accessBlock(startIndex,startTag);
+    }
+
+    private static void accessBlock(int index, int tag){
+        if(index >= cache.length){
+            throw new IndexOutOfBoundsException("Cache index out of bounds");
+        }
+        totalAccess++;
+
+        CacheEntry[] cacheRow = cache[index];
+        boolean invalidFound = false;
+        boolean hasHit = false;
+        for (CacheEntry cacheEntry : cacheRow) {
+            if (!cacheEntry.valid) { //empty block found
+                invalidFound = true;
+                cacheEntry.valid = true;
+                cacheEntry.tag=tag;
+                break;
+            } else if (cacheEntry.tag == tag) { //has hit correct tag
+                hasHit = true;
+                break;
+            }
+        }
+        if(hasHit)
+            hits++;
+        else if(invalidFound)
+            compulsoryMisses++;
+        else {
+            conflictMisses++;
+            replaceBlock(index, tag);
+        }
+    }
+
+    public static void calculateUnusedCacheBlocks(){
+        for(int i = 0; i < cache.length; i++){
+            for(int j = 0; j < cache[j].length; j++){
+                if(!cache[i][j].valid){
+                    unusedBlocks++;
+                }
+            }
+        }
+    }
+
+    private static void replaceBlock(int index, int tag){
+        if(getAssociativity()==1){
+            cache[index][0].tag=tag;
+            cache[index][0].valid=true;
+            return;
+        }
+
+        switch (getReplacementPolicy()){
+            case RR:
+                cache[index][rrTracker[index]].tag = tag;
+                cache[index][rrTracker[index]].valid = true;
+                rrTracker[index] += 1;
+                if(rrTracker[index] == getAssociativity())
+                    rrTracker[index] = 0;
+
+
+                return;
+            case LRU:
+                //todo: implement LRU
+                return;
+            case RND:
+                int associativeToReplace = (int)(Math.random()*getAssociativity());
+                cache[index][associativeToReplace].tag = tag;
+                cache[index][associativeToReplace].valid = true;
+                return;
+            default:
+                throw new RuntimeException("Unknown Replacement Policy: " + getReplacementPolicy()==null ? "null" : getReplacementPolicy().getStringName());
+        }
     }
 }
