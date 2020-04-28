@@ -84,7 +84,9 @@ public class MainClass {
     }
 
     public static void outputCacheSimulatorNumbers(){
-        DecimalFormat format = new DecimalFormat("#.##%");
+        DecimalFormat formatOne = new DecimalFormat("#.00");
+        DecimalFormat formatTwo= new DecimalFormat("#.##");
+        Cache.calculateUnusedCacheBlocks();
         System.out.println("***** Cache Simulation Results *****");
         System.out.println();
         System.out.printf("Total Cache Accesses: \t%s%n", Cache.getTotalAccess());
@@ -96,10 +98,11 @@ public class MainClass {
 
         System.out.println("***** ***** CACHE MISS RATE: ***** *****");
         System.out.println();
-        System.out.printf("Hit Rate: \t\t\t\t\t%s%%%n", Cache.getHits()); //temporary until hit rate method is created
-        System.out.printf("CPI: \t\t\t\t\t\t%s Cycles/Instruction%n", Cache.getHits()); //temporary until CPI method is created
-        System.out.printf("Unused Cache Space: \t\t%s KB / %s KB = %.2f %% Waste: $%.2f %n", Cache.getCacheSizeKB(), Cache.getCacheSizeKB(), 30.0, 50.0);
-        System.out.printf("Unused Cache Blocks: \t\t%s%n", 50);
+        System.out.printf("Hit Rate: \t\t\t\t\t%s%%%n", formatOne.format(Cache.getHitRate()));
+        System.out.printf("CPI: \t\t\t\t\t\t%s Cycles/Instruction%n", Cache.getCPI(count));
+        System.out.printf("Unused Cache Space: \t\t%.4f KB / %s KB = %s%% Waste: $%s %n", Cache.getUnusedCacheInKB(), Cache.getCacheSizeKB(),
+                formatTwo.format(Cache.getCachePercentageNotUsed()), Cache.getWaste());
+        System.out.printf("Unused Cache Blocks: \t\t%s / %s%n", Cache.getUnusedBlocks(), Cache.getTotalBlocks());
     }
 
     public static void printCacheOutputNumbersToFile() {

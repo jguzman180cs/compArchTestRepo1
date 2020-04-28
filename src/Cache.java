@@ -15,6 +15,7 @@ public class Cache{
     private static int blockSize;
     private static int associativity;
     private static ReplacementPolicy replacementPolicy;
+    private static int unusedBlocks = 0;
 
     private static int offsetBitCount;
     private static int indexBits;
@@ -187,7 +188,7 @@ public class Cache{
     }
 
     public static double getHitRate(){
-        return (hits * 100 / totalAccess);
+        return ((double) hits * 100 / totalAccess);
     }
 
     public static double getMissRate(){
@@ -198,6 +199,22 @@ public class Cache{
         int cycles = 3 * (compulsoryMisses + conflictMisses) + hits + (count * 2);
 
         return cycles / totalAccess;
+    }
+
+    public static int getUnusedBlocks(){
+        return unusedBlocks;
+    }
+
+    public static double getUnusedCacheInKB(){
+        return ((double) Cache.getUnusedBlocks() * Cache.getBlockSize()) / 1024;
+    }
+
+    public static double getCachePercentageNotUsed(){
+        return (Cache.getUnusedCacheInKB() / Cache.getCacheSizeKB()) * 100;
+    }
+
+    public static double getWaste(){
+        return getUnusedCacheInKB() * 0.05;
     }
 
     public static void accessAddress(int address, int length){
@@ -244,7 +261,15 @@ public class Cache{
         }
     }
 
-    
+    public static void calculateUnusedCacheBlocks(){
+        for(int i = 0; i < cache.length; i++){
+            for(int j = 0; j < cache[j].length; j++){
+                if(!cache[i][j].valid){
+                    unusedBlocks++;
+                }
+            }
+        }
+    }
 
     private static void replaceBlock(int index, int tag){
         if(getAssociativity()==1){
