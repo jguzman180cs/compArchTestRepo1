@@ -57,7 +57,7 @@ public class MainClass {
             System.out.printf("%nSomething unexpected happened when reading the trace file. Try again.%n");
         }
         //outputCacheSimulatorNumbers(); //use when debugging
-        printCacheSimulatorNumbersToFile();
+        printMilestoneTwoNumbersToFile();
     }
 
     public static void outputCacheNumbers(){
@@ -142,7 +142,7 @@ public class MainClass {
         System.out.printf("Unused Cache Blocks: \t\t%s / %s%n", Cache.getUnusedBlocks(), Cache.getTotalBlocks());
     }
 
-    public static void printCacheSimulatorNumbersToFile() {
+    public static void printMilestoneTwoNumbersToFile() {
         DecimalFormat formatOne = new DecimalFormat("#.00");
         DecimalFormat formatTwo= new DecimalFormat("#.##");
         Cache.calculateUnusedCacheBlocks();
@@ -150,6 +150,33 @@ public class MainClass {
             FileWriter writer = new FileWriter("O5.txt");
             String newLine = System.getProperty("line.separator");
 
+            writer.write("Cache Simulator - CS 3853 - Team 14");
+            writer.write(newLine);
+            writer.write(newLine);
+            writer.write(String.format("Trace File: %s%n", traceFileName));
+            writer.write(newLine);
+            writer.write("***** Cache Input Parameters *****");
+            writer.write(newLine);
+            writer.write(newLine);
+            writer.write(String.format("Cache Size: \t\t\t%s KB%n", Cache.getCacheSizeKB()));
+            writer.write(String.format("Block Size: \t\t\t%s bytes%n", Cache.getBlockSize()));
+            writer.write(String.format("Associativity: \t\t\t%s%n", Cache.getAssociativity()));
+            writer.write(String.format("Replacement Policy: \t%s%n", Cache.getReplacementPolicy().getStringName()));
+            writer.write(newLine);
+            writer.write(newLine);
+
+            writer.write("***** Cache Calculated Values *****");
+            writer.write(newLine);
+            writer.write(newLine);
+            writer.write(String.format("Total # Blocks: \t\t\t\t%s%n", Cache.getTotalBlocks()));
+            writer.write(String.format("Tag Size: \t\t\t\t\t\t%s bits%n", Cache.getTagBitSize()));
+            writer.write(String.format("Index Size: \t\t\t\t\t%s bits%n", Cache.getIndexBitSize()));
+            writer.write(String.format("Total # Rows: \t\t\t\t\t%s%n", Cache.getNumOfRows()));
+            writer.write(String.format("OverheadSize:  \t\t\t\t\t%s bytes%n", Cache.getOverheadMemorySizeBytes()));
+            writer.write(String.format("Implementation Memory Size: \t%s KB (%s bytes)%n", Cache.getImplementationMemorySizeBytes() / 1024, Cache.getImplementationMemorySizeBytes()));
+            writer.write(String.format("Cost: \t\t\t\t\t\t\t$%s%n", Cache.getCost()));
+            writer.write(newLine);
+            writer.write(newLine);
             writer.write("***** Cache Simulation Results *****");
             writer.write(newLine);
             writer.write(String.format("Total Cache Accesses: \t%s%n", Cache.getTotalAccess()));
