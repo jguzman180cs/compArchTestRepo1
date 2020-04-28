@@ -56,8 +56,8 @@ public class MainClass {
         } catch (IOException e){
             System.out.printf("%nSomething unexpected happened when reading the trace file. Try again.%n");
         }
-        //outputCacheSimulatorNumbers(); //use when debugging
-        printMilestoneTwoNumbersToFile();
+        outputCacheSimulatorNumbers(); //use when debugging
+//        printMilestoneTwoNumbersToFile();
     }
 
     public static void outputCacheNumbers(){
