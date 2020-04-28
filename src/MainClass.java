@@ -56,7 +56,8 @@ public class MainClass {
         } catch (IOException e){
             System.out.printf("%nSomething unexpected happened when reading the trace file. Try again.%n");
         }
-        outputCacheSimulatorNumbers();
+        //outputCacheSimulatorNumbers(); //use when debugging
+        printCacheSimulatorNumbersToFile();
     }
 
     public static void outputCacheNumbers(){
@@ -81,28 +82,6 @@ public class MainClass {
         System.out.printf("OverheadSize:  \t\t\t\t\t%s bytes%n", Cache.getOverheadMemorySizeBytes());
         System.out.printf("Implementation Memory Size: \t%s KB (%s bytes)%n", Cache.getImplementationMemorySizeBytes() / 1024, Cache.getImplementationMemorySizeBytes());
         System.out.printf("Cost: \t\t\t\t\t\t\t$%s%n", Cache.getCost());
-    }
-
-    public static void outputCacheSimulatorNumbers(){
-        DecimalFormat formatOne = new DecimalFormat("#.00");
-        DecimalFormat formatTwo= new DecimalFormat("#.##");
-        Cache.calculateUnusedCacheBlocks();
-        System.out.println("***** Cache Simulation Results *****");
-        System.out.println();
-        System.out.printf("Total Cache Accesses: \t%s%n", Cache.getTotalAccess());
-        System.out.printf("Cache Hits: \t\t\t%s %n", Cache.getHits());
-        System.out.printf("Cache Misses: \t\t\t%s%n", Cache.getCompulsoryMisses()+Cache.getConflictMisses());
-        System.out.printf("--- Compulsory Misses: \t\t%s%n", Cache.getCompulsoryMisses());
-        System.out.printf("--- Conflict Misses: \t\t%s%n", Cache.getConflictMisses());
-        System.out.println();
-
-        System.out.println("***** ***** CACHE MISS RATE: ***** *****");
-        System.out.println();
-        System.out.printf("Hit Rate: \t\t\t\t\t%s%%%n", formatOne.format(Cache.getHitRate()));
-        System.out.printf("CPI: \t\t\t\t\t\t%s Cycles/Instruction%n", Cache.getCPI(count));
-        System.out.printf("Unused Cache Space: \t\t%.4f KB / %s KB = %s%% Waste: $%s %n", Cache.getUnusedCacheInKB(), Cache.getCacheSizeKB(),
-                formatTwo.format(Cache.getCachePercentageNotUsed()), Cache.getWaste());
-        System.out.printf("Unused Cache Blocks: \t\t%s / %s%n", Cache.getUnusedBlocks(), Cache.getTotalBlocks());
     }
 
     public static void printCacheOutputNumbersToFile() {
@@ -138,6 +117,58 @@ public class MainClass {
             writer.close();
         } catch (IOException e){
             System.out.printf("%nSomethind unexpected happened when writing to file%n");
+        }
+    }
+
+    public static void outputCacheSimulatorNumbers(){
+        DecimalFormat formatOne = new DecimalFormat("#.00");
+        DecimalFormat formatTwo= new DecimalFormat("#.##");
+        Cache.calculateUnusedCacheBlocks();
+        System.out.println("***** Cache Simulation Results *****");
+        System.out.println();
+        System.out.printf("Total Cache Accesses: \t%s%n", Cache.getTotalAccess());
+        System.out.printf("Cache Hits: \t\t\t%s %n", Cache.getHits());
+        System.out.printf("Cache Misses: \t\t\t%s%n", Cache.getCompulsoryMisses()+Cache.getConflictMisses());
+        System.out.printf("--- Compulsory Misses: \t\t%s%n", Cache.getCompulsoryMisses());
+        System.out.printf("--- Conflict Misses: \t\t%s%n", Cache.getConflictMisses());
+        System.out.println();
+
+        System.out.println("***** ***** CACHE MISS RATE: ***** *****");
+        System.out.println();
+        System.out.printf("Hit Rate: \t\t\t\t\t%s%%%n", formatOne.format(Cache.getHitRate()));
+        System.out.printf("CPI: \t\t\t\t\t\t%s Cycles/Instruction%n", Cache.getCPI(count));
+        System.out.printf("Unused Cache Space: \t\t%.4f KB / %s KB = %s%% Waste: $%s %n", Cache.getUnusedCacheInKB(), Cache.getCacheSizeKB(),
+                formatTwo.format(Cache.getCachePercentageNotUsed()), Cache.getWaste());
+        System.out.printf("Unused Cache Blocks: \t\t%s / %s%n", Cache.getUnusedBlocks(), Cache.getTotalBlocks());
+    }
+
+    public static void printCacheSimulatorNumbersToFile() {
+        DecimalFormat formatOne = new DecimalFormat("#.00");
+        DecimalFormat formatTwo= new DecimalFormat("#.##");
+        Cache.calculateUnusedCacheBlocks();
+        try{
+            FileWriter writer = new FileWriter("O5.txt");
+            String newLine = System.getProperty("line.separator");
+
+            writer.write("***** Cache Simulation Results *****");
+            writer.write(newLine);
+            writer.write(String.format("Total Cache Accesses: \t%s%n", Cache.getTotalAccess()));
+            writer.write(String.format("Cache Hits: \t\t\t%s %n", Cache.getHits()));
+            writer.write(String.format("Cache Misses: \t\t\t%s%n", Cache.getCompulsoryMisses()+Cache.getConflictMisses()));
+            writer.write(String.format("--- Compulsory Misses: \t\t%s%n", Cache.getCompulsoryMisses()));
+            writer.write(String.format("--- Conflict Misses: \t\t%s%n", Cache.getConflictMisses()));
+            writer.write(newLine);
+
+            writer.write("***** ***** CACHE MISS RATE: ***** *****");
+            writer.write(newLine);
+            writer.write(String.format("Hit Rate: \t\t\t\t\t%s%%%n", formatOne.format(Cache.getHitRate())));
+            writer.write(String.format("CPI: \t\t\t\t\t\t%s Cycles/Instruction%n", Cache.getCPI(count)));
+            writer.write(String.format("Unused Cache Space: \t\t%.4f KB / %s KB = %s%% Waste: $%s %n", Cache.getUnusedCacheInKB(), Cache.getCacheSizeKB(),
+                    formatTwo.format(Cache.getCachePercentageNotUsed()), Cache.getWaste()));
+            writer.write(String.format("Unused Cache Blocks: \t\t%s / %s%n", Cache.getUnusedBlocks(), Cache.getTotalBlocks()));
+            writer.close();
+        } catch (IOException e){
+            System.out.printf("%nSomething unexpected happened when writing to file%n");
         }
     }
 }
